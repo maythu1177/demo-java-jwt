@@ -31,6 +31,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 	@Autowired
 	MyUserDetailsService userDetailsService;
+	
+	
 
 
 
@@ -48,23 +50,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				
 				jwtTokenUtil.validateToken(jwtToken);
 				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-				UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-				
+			 final	UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+			 System.out.println("userDetails" +userDetails);
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-						userDetails, null, userDetails.getAuthorities());
+						userDetails, null);
 				usernamePasswordAuthenticationToken
 						.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-				chain.doFilter(request, response);
 
-			} else {
-				ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-				Response resp = new Response(false, "Please provide proper header Value");
-				String jsonRespString = ow.writeValueAsString(resp);
-				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-				PrintWriter writer = response.getWriter();
-				writer.write(jsonRespString);
-			}
+			} 
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -77,5 +71,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			writer.write(jsonRespString);
 
 		}
+		chain.doFilter(request, response);
 	}
 }

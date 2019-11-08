@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	MyUserDetailsService userDetailsService;
 	
 	private String[] PUBLIC_RESOURCE_AND_URL = { "/", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
-			"/configuration/**", "/swagger-ui.html", "/webjars/**", "/api/user/v1/login"};
+			"/configuration/**", "/swagger-ui.html", "/webjars/**", "/api/user/v1/login","/api/user/v1/register"};
 
 	@Override
 	public void configure(final WebSecurity web) throws Exception {
@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		});
 		
 		
-		http.csrf().disable().authorizeRequests().antMatchers("/api/user/v1/login").permitAll().
+		http.csrf().disable().authorizeRequests().antMatchers("/api/user/v1/**").permitAll().
 		   anyRequest().authenticated().and()
 				.exceptionHandling().and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).
