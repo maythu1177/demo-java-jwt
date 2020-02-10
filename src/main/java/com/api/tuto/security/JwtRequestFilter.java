@@ -20,20 +20,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.api.tuto.config.Response;
-import com.api.tuto.service.MyUserDetailsService;
+import com.api.tuto.model.User;
+import com.api.tuto.repo.UserRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
 	@Autowired
 	JwtTokenUtil jwtTokenUtil;
-
+	
 	@Autowired
-	MyUserDetailsService userDetailsService;
+	private UserRepo userRepo;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -41,19 +41,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		final String authorizationHeader = request.getHeader("Authorization");
 
 		try {
-			String username = null;
-			String jwtToken = null;
 
 			if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-				jwtToken = authorizationHeader.substring(7);
+				String jwtToken = authorizationHeader.substring(7);
 
 				jwtTokenUtil.validateToken(jwtToken);
-				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+				String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 
-				final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+				User userDetails = userRepo.findByEmail(username);
 				
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-						userDetails,null,userDetails.getAuthorities());
+						userDetails,null,Arrays.asList(
+		        				new SimpleGrantedAuthority(userDetails.getRole().name())));
 				usernamePasswordAuthenticationToken
 						.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

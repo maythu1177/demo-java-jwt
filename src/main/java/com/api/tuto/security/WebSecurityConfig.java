@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import com.api.tuto.service.MyUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -27,8 +26,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	JwtRequestFilter jwtRequestFilter;
 	
-	@Autowired
-	MyUserDetailsService userDetailsService;
 	
 	private String[] PUBLIC_RESOURCE_AND_URL = { "/", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
 			"/configuration/**", "/swagger-ui.html", "/webjars/**", "/api/user/v1/login","/api/user/v1/register"};
