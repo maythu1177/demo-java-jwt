@@ -21,7 +21,6 @@ public class Response {
 	}
 
 	public Response(Boolean status, Object payload) {
-		super();
 		this.status = status;
 		this.payload = payload;
 	}

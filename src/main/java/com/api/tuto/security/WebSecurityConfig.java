@@ -12,10 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.api.tuto.service.MyUserDetailsService;
 
@@ -57,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		});
 		
 		
-		http.csrf().disable().authorizeRequests().antMatchers("/api/user/v1/**").permitAll().
+		http.csrf().disable().authorizeRequests().antMatchers("/api/raw/v1/**").hasAnyRole("USER","SUPER_ADMIN").
 		   anyRequest().authenticated().and()
 				.exceptionHandling().and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).

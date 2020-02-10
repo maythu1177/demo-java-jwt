@@ -48,6 +48,7 @@ public class JwtTokenUtil {
 
 	private String doGenerateToken(User user) {
 		Claims claims = Jwts.claims().setSubject(user.getEmail());
+		 claims.put("role",user.getRole());
 		return Jwts.builder().setClaims(claims)
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
 				.signWith(SignatureAlgorithm.HS512, secret).compact();

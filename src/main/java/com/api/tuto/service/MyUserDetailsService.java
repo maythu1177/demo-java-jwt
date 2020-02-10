@@ -1,8 +1,10 @@
 package com.api.tuto.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,15 +17,16 @@ import com.api.tuto.repo.UserRepo;
 public class MyUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	UserRepo userRepo;
+	private UserRepo userRepo;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 	   
 		com.api.tuto.model.User user = userRepo.findByEmail(email);
 		
-		return new User(user.getEmail(),user.getPassword(),
-                new ArrayList<>());
+		return new User(user.getEmail(),user.getPassword(),Arrays.asList(new SimpleGrantedAuthority(user.getRole().name())));
 	}
+	
+	
 
 }
